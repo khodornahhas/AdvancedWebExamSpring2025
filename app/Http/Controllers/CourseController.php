@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Database\Eloquent\Model\Course;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -11,7 +11,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //
+        $courses = Course::all();
+        return view('courses.create',compact('courses'));
     }
 
     /**
@@ -19,7 +20,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -27,7 +28,12 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request = Course::create([
+            'name'=>$request->name,
+             'description' => $request->description,
+         ]);
+         return redirect(route('courses.create'))->with('success','Course has been added successfully!');
+         
     }
 
     /**
@@ -35,7 +41,8 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $course = Course($id);
+        return view('courses.show', compact('course'));
     }
 
     /**
@@ -43,7 +50,9 @@ class CourseController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $course = Course::find($id);
+        return view('courses.edit', compact('coruse')); 
+
     }
 
     /**
@@ -51,7 +60,14 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $course = course::find($id); 
+    
+        $course->update([
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
+    
+        return redirect(route('courses.create'));
     }
 
     /**
@@ -59,6 +75,8 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $course = course::find($id);
+        $course -> delete();
+        return redirect(route('courses.index'))->with('success','course has been deleted successfully!');
     }
 }
